@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-yellow: #FFBE00;
+  --color-dark: #20262E;
+  --color-black: #08080A;
+  --color-search-bg: #DBDdE8;
+  --color-search-text: #414C58;
+  --color-card-img-bg: #F7F8F9;
+  --color-discount-green: #12B76A;
+  --color-free-tag-bg: #ECFDF3;
+  --color-free-tag-text: #027A48;
+  --color-footer-bg: #20262E;
+  --color-see-all-link: #4192DF;
+
+  --animate-shimmer: shimmer 3s infinite linear;
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-white text-black antialiased;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply text-[14px] font-semibold uppercase tracking-[0.5px] text-dark no-underline transition-colors hover:text-yellow relative py-4;
+  }
+  
+  .nav-link.active::after, .nav-link:hover::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-[2px] bg-yellow;
+  }
+
+  .btn-primary {
+    @apply bg-yellow text-dark font-medium text-[16px] px-6 py-2.5 rounded-[4px] cursor-pointer transition-colors hover:bg-[#E5AB00];
+  }
+
+  .section-heading {
+    @apply flex items-center mb-6;
+  }
+
+  .section-heading-bar {
+    @apply bg-yellow w-1 h-11 mr-2.5 shrink-0;
+  }
+
+  .section-heading-text {
+    @apply text-[40px] font-medium text-black m-0;
+  }
+
+  .product-card {
+    @apply bg-white overflow-hidden w-[290px] shrink-0;
+  }
+
+  .product-image-area {
+    @apply bg-card-img-bg h-[240px] relative flex items-center justify-center p-4;
+  }
+
+  .badge-demand {
+    @apply absolute top-0 left-0 bg-yellow text-dark text-[11px] font-semibold px-2 py-1;
+  }
+
+  .heart-icon {
+    @apply absolute top-3 right-3 text-[#999] cursor-pointer hover:text-red-500;
+  }
+
+  .btn-add-cart {
+    @apply w-full bg-white text-black border border-dark rounded-[2px] py-2.5 text-[14px] font-semibold uppercase tracking-[0.5px] cursor-pointer transition-colors hover:bg-[#F5F5F5];
+  }
+
+  .btn-buy-now {
+    @apply w-full bg-yellow text-dark border border-yellow rounded-[2px] py-3 text-[16px] font-semibold uppercase cursor-pointer mt-2 transition-colors hover:bg-[#E5AB00];
+  }
+
+  .filter-pill {
+    @apply bg-white text-search-text border border-[#D0D0D0] rounded-[20px] px-4 py-1.5 text-[13px] cursor-pointer transition-all;
+  }
+
+  .filter-pill.active {
+    @apply bg-yellow text-dark border-yellow font-semibold;
+  }
+
+  .footer-link {
+    @apply text-[rgba(255,255,255,0.5)] text-[14px] no-underline hover:text-white transition-colors;
+  }
+
+  @media (max-width: 1024px) {
+    .section-heading-text {
+      @apply text-[32px];
+    }
+    
+    .product-card {
+      @apply w-full;
+    }
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      @apply px-4;
+    }
+
+    .nav-link {
+      @apply text-[12px] gap-4;
+    }
+
+    section {
+      @apply !px-6;
+    }
+
+    .hero-text {
+      @apply !text-[36px];
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(255,190,0,0.4); }
+  50% { box-shadow: 0 4px 28px rgba(255,190,0,0.7); }
+}
+
+.animate-pulse-glow {
+  animation: pulse 2s infinite;
+}
+
+.diagonal-pattern {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 40px,
+    rgba(255,255,255,0.02) 40px,
+    rgba(255,255,255,0.02) 80px
+  );
+}
+
+.hex-grid {
+  background-image: radial-gradient(rgba(255,190,0,0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
