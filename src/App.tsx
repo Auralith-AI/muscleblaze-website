@@ -117,7 +117,7 @@ export default function App() {
   // Carousel Logic
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
+      setCurrentSlide((prev) => (prev + 1) % 5);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
@@ -144,68 +144,35 @@ export default function App() {
 
   async function handleFormSubmit() {
 
-    // ── STEP 1: Collect all form values ──
-    const name = (document.getElementById('field-name') as HTMLInputElement)?.value?.trim();
-    const weight_kg = parseFloat((document.getElementById('field-weight') as HTMLInputElement)?.value);
-    const height_cm = parseFloat((document.getElementById('field-height') as HTMLInputElement)?.value);
-    const contact = (document.getElementById('field-contact') as HTMLInputElement)?.value?.trim();
-
-    const goal = (document.querySelector('[data-field="goal"].selected') as HTMLElement)?.dataset?.value;
-    const fitness_level = (document.querySelector('[data-field="level"].selected') as HTMLElement)?.dataset?.value;
-    const diet = (document.querySelector('[data-field="diet"].selected') as HTMLElement)?.dataset?.value;
-    const budget = (document.querySelector('[data-field="budget"].selected') as HTMLElement)?.dataset?.value;
-    const current_supplements = (document.querySelector('[data-field="supplements"].selected') as HTMLElement)?.dataset?.value || 'Starting Fresh';
+    // ── STEP 1: Read values from React state ──
+    const name = formData.fullName.trim();
+    const weight_kg = parseFloat(formData.weight);
+    const height_cm = parseFloat(formData.height);
+    const contact = formData.contact.trim();
+    const goal = formData.goal;
+    const fitness_level = formData.fitnessLevel;
+    const diet = formData.diet;
+    const budget = formData.budget;
+    const current_supplements = formData.currentSupplements || 'Starting Fresh';
 
     // ── STEP 2: Validate ──
-    let hasError = false;
+    const newErrors: Record<string, string> = {};
 
-    // Clear previous errors
-    document.querySelectorAll('.field-error').forEach(el => el.remove());
-    document.querySelectorAll('.error-border').forEach(el => el.classList.remove('error-border'));
+    if (!name || name.length < 2) newErrors.fullName = 'Please enter your full name';
+    if (!weight_kg || weight_kg < 30 || weight_kg > 200) newErrors.weight = 'Enter a valid weight between 30–200 kg';
+    if (!height_cm || height_cm < 100 || height_cm > 250) newErrors.height = 'Enter a valid height between 100–250 cm';
+    if (!contact || contact.length < 5) newErrors.contact = 'Please enter your WhatsApp number or email';
+    if (!goal) newErrors.goal = 'Please select your fitness goal';
+    if (!fitness_level) newErrors.fitnessLevel = 'Please select your fitness level';
+    if (!diet) newErrors.diet = 'Please select your dietary preference';
+    if (!budget) newErrors.budget = 'Please select your monthly budget';
 
-    function showError(elementId: string, message: string) {
-      const el = document.getElementById(elementId);
-      if (el) {
-        el.style.border = '1.5px solid #E53E3E';
-        const err = document.createElement('p');
-        err.className = 'field-error';
-        err.style.cssText = 'color:#E53E3E;font-size:11px;margin:4px 0 0 0;';
-        err.textContent = message;
-        el.parentNode?.insertBefore(err, el.nextSibling);
-      }
-      hasError = true;
-    }
-
-    function showCardError(fieldName: string, message: string) {
-      const group = document.querySelector(`[data-group="${fieldName}"]`) as HTMLElement;
-      if (group) {
-        group.style.border = '1.5px solid #E53E3E';
-        group.style.borderRadius = '8px';
-        group.style.padding = '8px';
-        const err = document.createElement('p');
-        err.className = 'field-error';
-        err.style.cssText = 'color:#E53E3E;font-size:11px;margin:4px 0 0 0;';
-        err.textContent = message;
-        group.parentNode?.insertBefore(err, group.nextSibling);
-      }
-      hasError = true;
-    }
-
-    if (!name || name.length < 2) showError('field-name', 'Please enter your full name');
-    if (!weight_kg || weight_kg < 30 || weight_kg > 200) showError('field-weight', 'Enter a valid weight between 30-200 kg');
-    if (!height_cm || height_cm < 100 || height_cm > 250) showError('field-height', 'Enter a valid height between 100-250 cm');
-    if (!contact || contact.length < 5) showError('field-contact', 'Please enter your WhatsApp number or email');
-    if (!goal) showCardError('goal', 'Please select your fitness goal');
-    if (!fitness_level) showCardError('level', 'Please select your fitness level');
-    if (!diet) showCardError('diet', 'Please select your dietary preference');
-    if (!budget) showCardError('budget', 'Please select your monthly budget');
-
-    if (hasError) {
-      // Scroll to first error
-      const firstError = document.querySelector('.field-error');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
+
+    setErrors({});
 
     // ── STEP 3: Show loading state ──
     const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
